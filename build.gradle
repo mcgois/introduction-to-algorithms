@@ -1,0 +1,43 @@
+// plugins
+apply plugin: 'idea'
+apply plugin: 'java'
+
+dependencies {
+
+    // algs4.jar
+    
+}
+
+idea {
+
+    project.ipr {
+        withXml { provider ->
+            // GIT
+            provider.node.component
+                    .find { it.@name == 'VcsDirectoryMappings' }
+                    .mapping.@vcs = 'Git'
+
+            // Encoding
+            def encodingComponent = provider.node.component.find { it.@name == 'Encoding'}
+            if (encodingComponent) {
+                encodingComponent.@useUTFGuessing = true
+                encodingComponent.@native2AsciiForPropertiesFiles = true
+                encodingComponent.@defaultCharsetForPropertiesFiles = 'UTF-8'
+                encodingComponent.appendNode 'file', [url: 'PROJECT', charset: 'UTF-8']
+            } else {
+                def encodingNode = project.appendNode 'Encoding', [useUTFGuessing: true, native2AsciiForPropertiesFile: true, defaultCharsetForPropertiesFiles: 'UTF-8']
+                encodingNode.appendNode 'file', [url: 'PROJECT', charset: 'UTF-8']
+            }
+        }
+    }
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+// wrapper
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.14.1'
+}
