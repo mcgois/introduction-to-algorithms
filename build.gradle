@@ -5,6 +5,7 @@ apply plugin: 'java'
 dependencies {
 
     // algs4.jar
+    compile name: 'algs4'
     
 }
 
@@ -35,6 +36,9 @@ idea {
 repositories {
     mavenCentral()
     jcenter()
+    flatDir {
+        dirs 'lib'
+    }
 }
 
 // wrapper
