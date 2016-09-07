@@ -17,8 +17,8 @@ public class PercolationStats {
             Percolation percolation = new Percolation(n);
             int countOpen = 0;
             while (!percolation.percolates()) {
-                int i = StdRandom.uniform(1, n);
-                int j = StdRandom.uniform(1, n);
+                int i = StdRandom.uniform(1, n + 1); // exclusive on n + 1
+                int j = StdRandom.uniform(1, n + 1); // exclusive on n + 1
 
                 if (!percolation.isOpen(i, j)) {
                     percolation.open(i, j);
