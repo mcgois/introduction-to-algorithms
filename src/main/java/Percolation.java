@@ -1,11 +1,23 @@
+/**
+ * Matheus Cabral
+ * Semptember 7th, 2016
+ *
+ * Percolation. Creates a grid of NxN sites and controls its percolation.
+ *
+ */
+
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
 
+    // N x N size of grid.
     private int N;
 
+    // site status array to control if it is open or not.
+    // initialize with blocked (false).
     private boolean[] siteStatus;
 
+    // quick-union data structure
     private WeightedQuickUnionUF weightedQuickUnionUF;
 
     // O(N^2)
