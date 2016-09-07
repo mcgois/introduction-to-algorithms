@@ -45,11 +45,11 @@ public class Percolation {
 
     private void checkBoundaries(int i, int j) {
         if (i < 1 || i > N) {
-            throw new IndexOutOfBoundsException("i index out of boundaries.");
+            throw new IndexOutOfBoundsException("row index i out of bounds");
         }
 
         if (j < 1 || j > N) {
-            throw new IndexOutOfBoundsException("j index out of boundaries.");
+            throw new IndexOutOfBoundsException("column index i out of bounds");
         }
     }
 
@@ -87,7 +87,7 @@ public class Percolation {
 
     public boolean isFull(int i, int j) {
         checkBoundaries(i, j);
-        return weightedQuickUnionUF.connected(0, toArrayIndex(i, j));
+        return isOpen(i, j) && weightedQuickUnionUF.connected(0, toArrayIndex(i, j));
     }
 
     public boolean percolates() {
