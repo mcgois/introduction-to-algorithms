@@ -5,9 +5,9 @@ public class PercolationStats {
 
     private double[] ratios;
 
-    public PercolationStats(int n, int trials){
+    public PercolationStats(int n, int trials) {
         if (n <= 0 || trials <= 0) {
-            throw new IllegalArgumentException("size of grid and trials must be > 0.");
+            throw new IllegalArgumentException("invalid size of grid and trials.");
         }
 
         this.ratios = new double[trials];
@@ -58,9 +58,12 @@ public class PercolationStats {
         // run monte carlo simulation
         PercolationStats stats = new PercolationStats(n, trials);
 
-        System.out.println("mean                    = " + stats.mean());
-        System.out.println("stddev                  = " + stats.stddev());
-        System.out.println("95% confidence interval = " + stats.confidenceLo() + ", " + stats.confidenceHi());
+        System.out.println("mean                    = "
+                + stats.mean());
+        System.out.println("stddev                  = "
+                + stats.stddev());
+        System.out.println("95% confidence interval = "
+                + stats.confidenceLo() + ", " + stats.confidenceHi());
     }
 
 }

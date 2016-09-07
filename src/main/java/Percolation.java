@@ -4,9 +4,7 @@ public class Percolation {
 
     private int N;
 
-    private int[] siteStatus;
-    private static final int STATUS_BLOCKED = 0;
-    private static final int STATUS_OPEN = 1;
+    private boolean[] siteStatus;
 
     private WeightedQuickUnionUF weightedQuickUnionUF;
 
@@ -20,14 +18,14 @@ public class Percolation {
         this.weightedQuickUnionUF = new WeightedQuickUnionUF(n*n+2);
 
         // site status (0 - blocked, 1 - open, 2- full). initial blocked.
-        this.siteStatus = new int[n*n+2];
+        this.siteStatus = new boolean[n*n+2];
 
         // stores n
         this.N = n;
 
         // initialize virtual sites
-        this.siteStatus[0] = STATUS_OPEN;
-        this.siteStatus[n*n+1] = STATUS_OPEN;
+        this.siteStatus[0] = true;
+        this.siteStatus[n*n+1] = true;
 
         // connect virtual sites to all elements in first row and last row.
         for (int j = 1; j <= N; j++) {
@@ -58,25 +56,25 @@ public class Percolation {
     public void open(int i, int j) {
         checkBoundaries(i, j);
 
-        siteStatus[toArrayIndex(i, j)] = STATUS_OPEN;
+        siteStatus[toArrayIndex(i, j)] = true;
 
         // top
-        if (i - 1 >= 1 && siteStatus[toArrayIndex(i - 1, j)] == STATUS_OPEN) {
+        if (i - 1 >= 1 && siteStatus[toArrayIndex(i - 1, j)]) {
             weightedQuickUnionUF.union(toArrayIndex(i - 1, j), toArrayIndex(i, j));
         }
 
         // bottom
-        if (i + 1 <= N && siteStatus[toArrayIndex(i + 1, j)] == STATUS_OPEN) {
+        if (i + 1 <= N && siteStatus[toArrayIndex(i + 1, j)]) {
             weightedQuickUnionUF.union(toArrayIndex(i, j), toArrayIndex(i + 1, j));
         }
 
         // left
-        if (j - 1 >= 1 && siteStatus[toArrayIndex(i, j - 1)] == STATUS_OPEN) {
-            weightedQuickUnionUF.union(toArrayIndex(i,j-1), toArrayIndex(i, j));
+        if (j - 1 >= 1 && siteStatus[toArrayIndex(i, j - 1)]) {
+            weightedQuickUnionUF.union(toArrayIndex(i, j - 1), toArrayIndex(i, j));
         }
 
         // right
-        if (j + 1 <+ N && siteStatus[toArrayIndex(i, j + 1)] == STATUS_OPEN) {
+        if (j + 1 <= N && siteStatus[toArrayIndex(i, j + 1)]) {
             weightedQuickUnionUF.union(toArrayIndex(i, j), toArrayIndex(i, j + 1));
         }
     }
@@ -84,7 +82,7 @@ public class Percolation {
     public boolean isOpen(int i, int j) {
         checkBoundaries(i, j);
         int arrayIndex = toArrayIndex(i, j);
-        return siteStatus[arrayIndex] == STATUS_OPEN;
+        return siteStatus[arrayIndex];
     }
 
     public boolean isFull(int i, int j) {
