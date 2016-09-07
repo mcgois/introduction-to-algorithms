@@ -2,12 +2,24 @@
 apply plugin: 'idea'
 apply plugin: 'java'
 apply plugin: 'checkstyle'
+apply plugin: 'findbugs'
 
 dependencies {
 
     // algs4.jar
     compile name: 'algs4'
     
+}
+
+findbugs {
+    includeFilter = file("$rootProject.projectDir/config/findbugs/findbugs.xml")
+}
+
+tasks.withType(FindBugs) {
+    reports {
+        xml.enabled false
+        html.enabled true
+    }
 }
 
 idea {
