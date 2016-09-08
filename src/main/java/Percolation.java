@@ -155,15 +155,16 @@ public class Percolation {
      * @param args - program arguments.
      */
     public static void main(String[] args) {
+        // backwash test
         Percolation percolation = new Percolation(5);
-        percolation.open(2, 2);
+        percolation.open(1, 3);
         percolation.open(2, 3);
-        percolation.open(1, 2);
-        percolation.open(3, 2);
-        percolation.open(4, 2);
-        System.out.println(percolation.percolates());
-        percolation.open(5, 2);
-        System.out.println(percolation.percolates());
+        percolation.open(3, 3);
+        percolation.open(4, 3);
+        percolation.open(5, 3);
+        System.out.println(percolation.isFull(5,1));
+        percolation.open(5, 1);
+        System.out.println(percolation.isFull(5, 1));
     }
 
 }
