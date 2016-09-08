@@ -8,6 +8,12 @@
 
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
+/**
+ * Percolation Class.
+ *
+ * Memory usage: ~ 9N^2 (8N^2+88 + N^2 + 24 + 4)
+ *
+ */
 public class Percolation {
 
     // N x N size of grid.

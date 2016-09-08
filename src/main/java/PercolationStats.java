@@ -17,7 +17,15 @@
 
 import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
+import edu.princeton.cs.algs4.Stopwatch;
 
+/**
+ * PercolationStats Class.
+ *
+ * Formula QuickFind: TRIALS * 7,7622E-10 * N ^ 3.8
+ * Formula WeightedQuickUnion: TRIALS * 3,07935E-9 * N ^ 2.5
+ *
+ */
 public class PercolationStats {
 
     // mean of trial results
@@ -124,8 +132,14 @@ public class PercolationStats {
         int n = Integer.parseInt(args[0]);
         int trials = Integer.parseInt(args[1]);
 
+        // Stopwatch
+        Stopwatch stopwatch = new Stopwatch();
+
         // run monte carlo simulation
         PercolationStats stats = new PercolationStats(n, trials);
+
+        // elapsed time
+        double elapsedTime = stopwatch.elapsedTime();
 
         // Output results
         System.out.println("mean                    = "
@@ -134,6 +148,9 @@ public class PercolationStats {
                 + stats.stddev());
         System.out.println("95% confidence interval = "
                 + stats.confidenceLo() + ", " + stats.confidenceHi());
+
+        // elapsed time
+        System.out.println("elapsed time: " + elapsedTime);
     }
 
 }
