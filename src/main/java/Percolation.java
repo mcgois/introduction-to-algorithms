@@ -51,10 +51,25 @@ public class Percolation {
 
     }
 
+    /**
+     * Converts two dimensional matrix index to a array index.
+     *
+     * @param i - row
+     * @param j - column
+     *
+     * @return int array equivalent index.
+     */
     private int toArrayIndex(int i, int j) {
+        checkBoundaries(i, j);
         return (i-1) * this.N + j;
     }
 
+    /**
+     * Verifies if row/column are within the matrix limits.
+     *
+     * @param i - given row
+     * @param j - given column
+     */
     private void checkBoundaries(int i, int j) {
         if (i < 1 || i > N) {
             throw new IndexOutOfBoundsException("row index i out of bounds");
@@ -65,9 +80,16 @@ public class Percolation {
         }
     }
 
+    /**
+     * Opens site on (i,j).
+     *
+     * @param i - row
+     * @param j - column
+     */
     public void open(int i, int j) {
         checkBoundaries(i, j);
 
+        // change status to open
         siteStatus[toArrayIndex(i, j)] = true;
 
         // top
@@ -91,21 +113,47 @@ public class Percolation {
         }
     }
 
+    /**
+     * Verifies if site (i,j) is open.
+     *
+     * @param i - row
+     * @param j - column
+     *
+     * @return true if site is open.
+     */
     public boolean isOpen(int i, int j) {
         checkBoundaries(i, j);
         int arrayIndex = toArrayIndex(i, j);
         return siteStatus[arrayIndex];
     }
 
+    /**
+     * Verifies if site (i,j) is full.
+     *
+     * @param i - row
+     * @param j - column
+     *
+     * @return true if site is full.
+     */
     public boolean isFull(int i, int j) {
         checkBoundaries(i, j);
         return isOpen(i, j) && weightedQuickUnionUF.connected(0, toArrayIndex(i, j));
     }
 
+    /**
+     * Verifies if system percolates or not.
+     *
+     * @return true if percolates.
+     */
     public boolean percolates() {
         return weightedQuickUnionUF.connected(0, N*N+1);
     }
 
+    /**
+     * Main method for testing.
+     *
+     * @param args - program arguments.
+     */
     public static void main(String[] args) {
         Percolation percolation = new Percolation(5);
         percolation.open(2, 2);
