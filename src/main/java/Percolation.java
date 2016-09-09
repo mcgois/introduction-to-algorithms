@@ -46,19 +46,6 @@ public class Percolation {
         // initialize virtual sites
         this.siteStatus[0] = true;
         this.siteStatus[n * n +1] = true;
-
-        // connect virtual sites to all elements in first row and last row.
-        for (int j = 1; j <= this.n; j++) {
-
-            int indexFirstRow = toArrayIndex(1, j);
-            weightedQuickUnion.union(0, indexFirstRow);
-            topWeightedQuickUnion.union(0, indexFirstRow);
-
-            int indexLastRow = toArrayIndex(this.n, j);
-            weightedQuickUnion.union(this.n * this.n + 1,
-                                     indexLastRow);
-        }
-
     }
 
     /**
@@ -125,6 +112,17 @@ public class Percolation {
             weightedQuickUnion.union(toArrayIndex(i, j), toArrayIndex(i, j + 1));
             topWeightedQuickUnion.union(toArrayIndex(i, j), toArrayIndex(i, j + 1));
         }
+
+        // if first row
+        if (i == 1) {
+            weightedQuickUnion.union(0, toArrayIndex(i, j));
+            topWeightedQuickUnion.union(0, toArrayIndex(i, j));
+        }
+
+        // if (last row
+        if (i == n) {
+            weightedQuickUnion.union(this.n * this.n + 1, toArrayIndex(i, j));
+        }
     }
 
     /**
@@ -170,16 +168,11 @@ public class Percolation {
      * @param args - program arguments.
      */
     public static void main(String[] args) {
-        // backwash test
-        Percolation percolation = new Percolation(5);
-        percolation.open(1, 3);
-        percolation.open(2, 3);
-        percolation.open(3, 3);
-        percolation.open(4, 3);
-        percolation.open(5, 3);
-        System.out.println(percolation.isFull(5, 1));
-        percolation.open(5, 1);
-        System.out.println(percolation.isFull(5, 1));
+        // n = 1
+        Percolation percolation = new Percolation(1);
+        System.out.println(percolation.percolates());
+        percolation.open(1, 1);
+        System.out.println(percolation.percolates());
     }
 
 }
