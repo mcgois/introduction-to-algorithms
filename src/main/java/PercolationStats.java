@@ -148,9 +148,6 @@ public class PercolationStats {
                 + stats.stddev());
         System.out.println("95% confidence interval = "
                 + stats.confidenceLo() + ", " + stats.confidenceHi());
-
-        // elapsed time
-        System.out.println("elapsed time: " + elapsedTime);
     }
 
 }
