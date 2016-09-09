@@ -24,8 +24,8 @@ public class Percolation {
     private boolean[] siteStatus;
 
     // quick-union data structure
-    private WeightedQuickUnionUF weightedQuickUnionUF;
-    private WeightedQuickUnionUF secondWeightedQuickUnionUF;
+    private WeightedQuickUnionUF weightedQuickUnion;
+    private WeightedQuickUnionUF topWeightedQuickUnion;
 
     // O(N^2)
     public Percolation(int n) {
@@ -34,8 +34,8 @@ public class Percolation {
         }
 
         // first (0) and last (n+1) elements are virtual sites
-        this.weightedQuickUnionUF = new WeightedQuickUnionUF(n*n+2);
-        this.secondWeightedQuickUnionUF = new WeightedQuickUnionUF(n*n+1);
+        this.weightedQuickUnion = new WeightedQuickUnionUF(n*n+2);
+        this.topWeightedQuickUnion = new WeightedQuickUnionUF(n*n+1);
 
         // site status (0 - blocked, 1 - open, 2- full). initial blocked.
         this.siteStatus = new boolean[n*n+2];
@@ -51,11 +51,11 @@ public class Percolation {
         for (int j = 1; j <= N; j++) {
 
             int indexFirstRow = toArrayIndex(1, j);
-            weightedQuickUnionUF.union(0, indexFirstRow);
-            secondWeightedQuickUnionUF.union(0, indexFirstRow);
+            weightedQuickUnion.union(0, indexFirstRow);
+            topWeightedQuickUnion.union(0, indexFirstRow);
 
             int indexLastRow = toArrayIndex(N, j);
-            weightedQuickUnionUF.union(N*N+1, indexLastRow);
+            weightedQuickUnion.union(N * N + 1, indexLastRow);
         }
 
     }
@@ -103,26 +103,26 @@ public class Percolation {
 
         // top
         if (i - 1 >= 1 && siteStatus[toArrayIndex(i - 1, j)]) {
-            weightedQuickUnionUF.union(toArrayIndex(i - 1, j), toArrayIndex(i, j));
-            secondWeightedQuickUnionUF.union(toArrayIndex(i - 1, j), toArrayIndex(i, j));
+            weightedQuickUnion.union(toArrayIndex(i - 1, j), toArrayIndex(i, j));
+            topWeightedQuickUnion.union(toArrayIndex(i - 1, j), toArrayIndex(i, j));
         }
 
         // bottom
         if (i + 1 <= N && siteStatus[toArrayIndex(i + 1, j)]) {
-            weightedQuickUnionUF.union(toArrayIndex(i, j), toArrayIndex(i + 1, j));
-            secondWeightedQuickUnionUF.union(toArrayIndex(i, j), toArrayIndex(i + 1, j));
+            weightedQuickUnion.union(toArrayIndex(i, j), toArrayIndex(i + 1, j));
+            topWeightedQuickUnion.union(toArrayIndex(i, j), toArrayIndex(i + 1, j));
         }
 
         // left
         if (j - 1 >= 1 && siteStatus[toArrayIndex(i, j - 1)]) {
-            weightedQuickUnionUF.union(toArrayIndex(i, j - 1), toArrayIndex(i, j));
-            secondWeightedQuickUnionUF.union(toArrayIndex(i, j - 1), toArrayIndex(i, j));
+            weightedQuickUnion.union(toArrayIndex(i, j - 1), toArrayIndex(i, j));
+            topWeightedQuickUnion.union(toArrayIndex(i, j - 1), toArrayIndex(i, j));
         }
 
         // right
         if (j + 1 <= N && siteStatus[toArrayIndex(i, j + 1)]) {
-            weightedQuickUnionUF.union(toArrayIndex(i, j), toArrayIndex(i, j + 1));
-            secondWeightedQuickUnionUF.union(toArrayIndex(i, j), toArrayIndex(i, j + 1));
+            weightedQuickUnion.union(toArrayIndex(i, j), toArrayIndex(i, j + 1));
+            topWeightedQuickUnion.union(toArrayIndex(i, j), toArrayIndex(i, j + 1));
         }
     }
 
@@ -150,7 +150,8 @@ public class Percolation {
      */
     public boolean isFull(int i, int j) {
         checkBoundaries(i, j);
-        return isOpen(i, j) && secondWeightedQuickUnionUF.connected(0, toArrayIndex(i, j));
+        return isOpen(i, j) &&
+               topWeightedQuickUnion.connected(0, toArrayIndex(i, j));
     }
 
     /**
@@ -159,7 +160,7 @@ public class Percolation {
      * @return true if percolates.
      */
     public boolean percolates() {
-        return weightedQuickUnionUF.connected(0, N*N+1);
+        return weightedQuickUnion.connected(0, N*N+1);
     }
 
     /**
@@ -175,7 +176,7 @@ public class Percolation {
         percolation.open(3, 3);
         percolation.open(4, 3);
         percolation.open(5, 3);
-        System.out.println(percolation.isFull(5,1));
+        System.out.println(percolation.isFull(5, 1));
         percolation.open(5, 1);
         System.out.println(percolation.isFull(5, 1));
     }
