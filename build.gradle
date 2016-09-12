@@ -8,6 +8,9 @@ dependencies {
 
     // algs4.jar
     compile name: 'algs4'
+
+    // junit
+    testCompile 'junit:junit:4.12'
     
 }
 
