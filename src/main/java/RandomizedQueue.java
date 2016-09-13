@@ -6,7 +6,7 @@ import java.util.NoSuchElementException;
 public class RandomizedQueue<Item> implements Iterable<Item> {
 
     private Item[] q;
-    private int N = 0;
+    private int n = 0;
     private int head = 0;
     private int tail = 0;
 
@@ -15,11 +15,11 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     public boolean isEmpty() {
-        return N == 0;
+        return n == 0;
     }
 
     public int size() {
-        return N;
+        return n;
     }
 
     public void enqueue(Item item) {
@@ -31,16 +31,16 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             resize(2 * q.length);
         }
         q[tail++] = item;
-        N++;
+        n++;
     }
 
     private void resize(int capacity) {
         Item[] copy = (Item[]) new Object[capacity];
-        for (int i = 0, k = head; i < N; i++, k++) {
+        for (int i = 0, k = head; i < n; i++, k++) {
             copy[i] = q[k];
         }
         head = 0;
-        tail = N;
+        tail = n;
         q = copy;
     }
 
@@ -52,15 +52,15 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         Item item = q[indexToRemove];
         q[indexToRemove] = q[tail-1];
         tail--;
-        N--;
-        if (N > 0 && N == q.length / 4) {
+        n--;
+        if (n > 0 && n == q.length / 4) {
             resize(q.length / 2);
         }
         return item;
     }
 
     public Item sample() {
-        if (N == 0) {
+        if (n == 0) {
             return null;
         }
         int index = StdRandom.uniform(head, tail);
