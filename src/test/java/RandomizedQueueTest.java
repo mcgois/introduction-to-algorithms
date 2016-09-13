@@ -30,10 +30,10 @@ public class RandomizedQueueTest {
         queue.iterator().remove();
     }
 
-//    @Test(expected = NoSuchElementException.class)
-//    public void deveriaLevantarExcecaoNoSuchElementQuandoMetodoNextIterator() {
-//        // when
-//        queue.iterator().next();
-//    }
+    @Test(expected = NoSuchElementException.class)
+    public void deveriaLevantarExcecaoNoSuchElementQuandoMetodoNextIterator() {
+        // when
+        queue.iterator().next();
+    }
 
 }

@@ -73,8 +73,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
     private class ShuffleIterator implements Iterator<Item> {
 
-        Item[] qCopy;
-        int current = 0;
+        private Item[] qCopy;
+        private int current = 0;
 
         ShuffleIterator() {
             qCopy = (Item[]) new Object[q.length];
@@ -93,6 +93,9 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
         @Override
         public Item next() {
+            if (current >= tail) {
+                throw new NoSuchElementException("no such element.");
+            }
             return qCopy[current++];
         }
 
