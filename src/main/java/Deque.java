@@ -110,7 +110,7 @@ public class Deque<Item> implements Iterable<Item> {
 
         @Override
         public boolean hasNext() {
-            return first != null;
+            return current != null;
         }
 
         @Override
@@ -131,11 +131,13 @@ public class Deque<Item> implements Iterable<Item> {
 
     public static void main(String[] args) {
         Deque<String> deque = new Deque<>();
-        deque.addFirst("Cabral");
         deque.addFirst("Matheus");
-        deque.addLast("Gois");
-        System.out.println(deque.removeLast());
-        System.out.println("uia");
+        System.out.println(deque.iterator().next());
+//        deque.addFirst("Cabral");
+//        deque.addFirst("Matheus");
+//        deque.addLast("Gois");
+//        System.out.println(deque.removeLast());
+//        System.out.println("uia");
     }
 
 }
