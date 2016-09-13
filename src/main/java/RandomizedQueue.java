@@ -60,8 +60,8 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     public Item sample() {
-        if (n == 0) {
-            return null;
+        if (isEmpty()) {
+            throw new NoSuchElementException("no element to sample");
         }
         int index = StdRandom.uniform(head, tail);
         return q[index];
