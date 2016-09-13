@@ -48,9 +48,10 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         if (isEmpty()) {
             throw new NoSuchElementException("no element to remove");
         }
-        Item item = q[head];
-        q[head] = null;
-        head++;
+        int indexToRemove = StdRandom.uniform(head, tail);
+        Item item = q[indexToRemove];
+        q[indexToRemove] = q[tail];
+        tail--;
         N--;
         if (N > 0 && N == q.length / 4) {
             resize(q.length / 2);
