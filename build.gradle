@@ -18,6 +18,8 @@ findbugs {
     includeFilter = file("$rootProject.projectDir/config/findbugs/findbugs.xml")
 }
 
+checkstyleTest.enabled = false
+
 tasks.withType(FindBugs) {
     reports {
         xml.enabled false
