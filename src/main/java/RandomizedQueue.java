@@ -6,8 +6,8 @@ import java.util.NoSuchElementException;
 public class RandomizedQueue<Item> implements Iterable<Item> {
 
     private Item[] q;
-    private int n = 0;
-    private int head = 0;
+//    private int n = 0;
+//    private int head = 0;
     private int tail = 0;
 
     public RandomizedQueue() {
@@ -15,11 +15,11 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     }
 
     public boolean isEmpty() {
-        return n == 0;
+        return tail == 0;
     }
 
     public int size() {
-        return n;
+        return tail;
     }
 
     public void enqueue(Item item) {
@@ -31,16 +31,13 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
             resize(2 * q.length);
         }
         q[tail++] = item;
-        n++;
     }
 
     private void resize(int capacity) {
         Item[] copy = (Item[]) new Object[capacity];
-        for (int i = 0, k = head; i < n; i++, k++) {
-            copy[i] = q[k];
+        for (int i = 0; i < tail; i++) {
+            copy[i] = q[i];
         }
-        head = 0;
-        tail = n;
         q = copy;
     }
 
@@ -48,12 +45,12 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         if (isEmpty()) {
             throw new NoSuchElementException("no element to remove");
         }
-        int indexToRemove = StdRandom.uniform(head, tail);
+        int indexToRemove = StdRandom.uniform(0, tail);
         Item item = q[indexToRemove];
         q[indexToRemove] = q[tail-1];
+        q[tail-1] = null;
         tail--;
-        n--;
-        if (n > 0 && n == q.length / 4) {
+        if (tail > 0 && tail == q.length / 4) {
             resize(q.length / 2);
         }
         return item;
@@ -63,7 +60,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         if (isEmpty()) {
             throw new NoSuchElementException("no element to sample");
         }
-        int index = StdRandom.uniform(head, tail);
+        int index = StdRandom.uniform(0, tail);
         return q[index];
     }
 
@@ -79,11 +76,11 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
 
         ShuffleIterator() {
             qCopy = (Item[]) new Object[q.length];
-            for (int i = head; i < tail; i++) {
+            for (int i = 0; i < tail; i++) {
                 qCopy[i] = q[i];
             }
-            if (head < tail) {
-                StdRandom.shuffle(qCopy, head, tail - 1);
+            if (0 < tail) {
+                StdRandom.shuffle(qCopy, 0, tail - 1);
             }
         }
 
