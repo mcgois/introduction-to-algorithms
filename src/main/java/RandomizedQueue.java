@@ -50,7 +50,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         }
         int indexToRemove = StdRandom.uniform(head, tail);
         Item item = q[indexToRemove];
-        q[indexToRemove] = q[tail];
+        q[indexToRemove] = q[tail-1];
         tail--;
         N--;
         if (N > 0 && N == q.length / 4) {
