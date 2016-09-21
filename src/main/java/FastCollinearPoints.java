@@ -35,79 +35,60 @@ public class FastCollinearPoints {
             }
         }
 
-        Point[] copy = new Point[points.length];
-        for (int i = 0; i < points.length; i++) {
-            copy[i] = points[i];
-        }
-
-
         this.promotedPoints = new Point[2*points.length+1];
 
-        for (int pIndex = 0; pIndex < points.length - 3; pIndex++) {
+
+        for (int pIndex = 0; pIndex < points.length - 1; pIndex++) {
             Point p = points[pIndex];
 
             // order by slope of p
-            Arrays.sort(copy, p.slopeOrder());
+            Arrays.sort(points, pIndex + 1, points.length, p.slopeOrder());
 
-            double currentSlope = Double.NaN;
-
-            int currentIndex = 1;
+            Double currentSlope = null;
             Point min = p;
             Point max = p;
             int count = 0;
-            for (int i = 1; i < copy.length; i++) {
-                if (copy[i].slopeTo(p) == currentSlope) {
-                    count++;
+            for (int j = pIndex + 1; j < points.length; j++) {
+//                System.out.println("Comparing " + p + " against " + points[j]);
+                Double jSlope = p.slopeTo(points[j]);
 
-                    // ponto faz parte do conjunto de mesmo slops
-                    if (copy[i].compareTo(min) < 0) {
-                        min = copy[i];
+                if (!jSlope.equals(currentSlope)) {
+                    if (count >= 4 && max != min) {
+                        promotedPoints[promotedPointsCount] = min;
+                        promotedPoints[promotedPointsCount+1] = max;
+                        promotedPointsCount += 2;
                     }
 
-                    if (copy[i].compareTo(max) > 0) {
-                        max = copy[i];
-                    }
-
-                } else {
-                    if (min != max && count >= 4) {
-                        salvaSegmento(min, max);
-                    }
                     min = p;
                     max = p;
-
-                    currentSlope = copy[i].slopeTo(p);
+                    currentSlope = jSlope;
                     count = 2;
 
-                    if (copy[i].compareTo(min) < 0) {
-                        min = copy[i];
+                    if (min.compareTo(points[j]) > 0) {
+                        min = points[j];
                     }
 
-                    if (copy[i].compareTo(max) > 0) {
-                        max = copy[i];
+                    if (max.compareTo(points[j]) < 0) {
+                        max = points[j];
+                    }
+                } else {
+                    count++;
+                    if (min.compareTo(points[j]) > 0) {
+                        min = points[j];
                     }
 
+                    if (max.compareTo(points[j]) < 0) {
+                        max = points[j];
+                    }
                 }
-
             }
 
-            if (min != max && count >= 4) {
-                salvaSegmento(min, max);
+            if (count >= 4 && max != min) {
+                promotedPoints[promotedPointsCount] = min;
+                promotedPoints[promotedPointsCount+1] = max;
+                promotedPointsCount += 2;
             }
 
-//            double slope = copy[0].slopeTo(copy[1]);
-//            int countPoints = 2;
-//            for (int i = 1; i < copy.length - 1; i++, countPoints++) {
-//                double slope2 = copy[i].slopeTo(copy[i+1]);
-//                if (slope2 != slope) {
-//                    break;
-//                }
-//            }
-//
-//            if (countPoints >= 4) {
-//                promotedPoints[promotedPointsCount] = copy[0];
-//                promotedPoints[promotedPointsCount + 1] = copy[countPoints - 1];
-//                promotedPointsCount += 2;
-//            }
         }
 
         lineSegmentsCount = promotedPointsCount / 2;
@@ -122,11 +103,11 @@ public class FastCollinearPoints {
 
     }
 
-    private void salvaSegmento(Point min, Point max) {
-        promotedPoints[promotedPointsCount] = min;
-        promotedPoints[promotedPointsCount+1] = max;
-        promotedPointsCount += 2;
-    }
+//    private void salvaSegmento(Point min, Point max) {
+//        promotedPoints[promotedPointsCount] = min;
+//        promotedPoints[promotedPointsCount+1] = max;
+//        promotedPointsCount += 2;
+//    }
 
     private void createAndStoreSegment(Point p, Point q, Point r, Point s) {
 //        Point[] points = new Point[4];
