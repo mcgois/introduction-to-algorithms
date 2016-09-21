@@ -8,6 +8,7 @@
  *
  ******************************************************************************/
 
+import java.util.Arrays;
 import java.util.Comparator;
 import edu.princeton.cs.algs4.StdDraw;
 
@@ -143,11 +144,15 @@ public class Point implements Comparable<Point> {
      * Unit tests the Point data type.
      */
     public static void main(String[] args) {
-        Point p = new Point(329, 221);
-        Point r = new Point(88, 368);
-        Point q = new Point(495, 50);
+        Point[] points = new Point[3];
+        points[0] = new Point(6000, 7000);
+        points[1] = new Point(0, 10000);
+        points[2] = new Point(3000, 4000);
+        Arrays.sort(points, points[0].slopeOrder());
+        System.out.println(Arrays.toString(points));
 
-        System.out.println(p.slopeOrder().compare(q, r));
-        System.out.println(p.slopeOrder().compare(r, q));
+        System.out.println(points[0].slopeTo(points[1]));
+
+        System.out.println(points[0].slopeTo(points[2]));
     }
 }

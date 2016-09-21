@@ -36,60 +36,122 @@ public class FastCollinearPoints {
             }
         }
 
-        this.promotedPoints = new Point[points.length];
+        this.promotedPoints = new Point[2*points.length];
 
-        for (int pIndex = 0; pIndex < points.length - 1; pIndex++) {
+        Arrays.sort(points);
+
+        for (int pIndex = 0; pIndex < points.length - 2; pIndex++) {
             Point p = points[pIndex];
 
-            // order by slope of p
+            // sort by p
             Arrays.sort(points, pIndex + 1, points.length, p.slopeOrder());
 
-            double currentSlope = Double.NaN;
-            Point min = p;
-            Point max = p;
             int count = 0;
-            for (int j = pIndex + 1; j < points.length; j++) {
-//                System.out.println("Comparing " + p + " against " + points[j]);
-                double jSlope = p.slopeTo(points[j]);
+            Point j = null;
+            Point k = null;
+            for (int jIndex = pIndex + 1, kIndex = pIndex + 2; jIndex < points.length - 1; jIndex++, kIndex++) {
 
-                if (jSlope != currentSlope) {
-                    if (count >= 4 && max != min) {
-                        promotedPoints[promotedPointsCount] = min;
-                        promotedPoints[promotedPointsCount+1] = max;
+                j = points[jIndex];
+                k = points[kIndex];
+
+//                if (j == p) {
+//                    continue;
+//                }
+//
+                double slopeJ = p.slopeTo(j);
+                double slopeK = p.slopeTo(k);
+
+                if (slopeJ == slopeK) {
+                    count++;
+//                    points[jIndex] = points[pIndex+1];
+                } else {
+                    if (count + 2 >= 4) {
+                        promotedPoints[promotedPointsCount] = p;
+                        promotedPoints[promotedPointsCount+1] = j;
                         promotedPointsCount += 2;
                     }
+                    count = 0;
 
-                    min = p;
-                    max = p;
-                    currentSlope = jSlope;
-                    count = 2;
-
-                    if (min.compareTo(points[j]) > 0) {
-                        min = points[j];
-                    }
-
-                    if (max.compareTo(points[j]) < 0) {
-                        max = points[j];
-                    }
-                } else {
-                    count++;
-                    if (min.compareTo(points[j]) > 0) {
-                        min = points[j];
-                    }
-
-                    if (max.compareTo(points[j]) < 0) {
-                        max = points[j];
-                    }
                 }
+
             }
 
-            if (count >= 4 && max != min) {
-                promotedPoints[promotedPointsCount] = min;
-                promotedPoints[promotedPointsCount+1] = max;
+            if (count + 2 >= 4) {
+                promotedPoints[promotedPointsCount] = p;
+                promotedPoints[promotedPointsCount+1] = k;
                 promotedPointsCount += 2;
             }
 
+
         }
+
+
+
+//        for (int pIndex = 0; pIndex < points.length - 1; pIndex++) {
+//            Point p = points[pIndex];
+//
+//            // order by slope of p
+//            Arrays.sort(points, pIndex + 1, points.length, p.slopeOrder());
+//
+//            double currentSlope = Double.NaN;
+//            Point min = p;
+//            Point max = p;
+//            int count = 0;
+//
+////            int index?
+//
+//            for (int j = pIndex + 1; j < points.length; j++) {
+////                System.out.println("Comparing " + p + " against " + points[j]);
+//                double jSlope = p.slopeTo(points[j]);
+//
+//                if (points[j] == p) {
+//                    continue;
+//                }
+//
+//                if (jSlope != currentSlope) {
+//                    if (count >= 4 && max != min) {
+//                        promotedPoints[promotedPointsCount] = min;
+//                        promotedPoints[promotedPointsCount+1] = max;
+//                        promotedPointsCount += 2;
+//                    }
+//
+//                    min = p;
+//                    max = p;
+//                    currentSlope = jSlope;
+//                    count = 2;
+//
+//                    if (min.compareTo(points[j]) > 0) {
+//                        min = points[j];
+//                    }
+//
+//                    if (max.compareTo(points[j]) < 0) {
+//                        max = points[j];
+//                    }
+//
+////                    points[j-1] = p;
+//
+//                } else {
+//                    count++;
+//                    if (min.compareTo(points[j]) > 0) {
+//                        min = points[j];
+//                    }
+//
+//                    if (max.compareTo(points[j]) < 0) {
+//                        max = points[j];
+//                    }
+//
+//
+//                    points[j-1] = p;
+//                }
+//            }
+//
+//            if (count >= 4 && max != min) {
+//                promotedPoints[promotedPointsCount] = min;
+//                promotedPoints[promotedPointsCount+1] = max;
+//                promotedPointsCount += 2;
+//            }
+//
+//        }
 
         lineSegmentsCount = promotedPointsCount / 2;
         if (lineSegmentsCount > 0) {
