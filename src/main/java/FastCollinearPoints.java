@@ -3,6 +3,7 @@ import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
 
 import java.util.Arrays;
+import java.util.LinkedList;
 
 public class FastCollinearPoints {
 
@@ -36,145 +37,70 @@ public class FastCollinearPoints {
             }
         }
 
-        this.promotedPoints = new Point[2*points.length];
-
+        // ordem natural dos pontos
         Arrays.sort(points);
 
-        for (int pIndex = 0; pIndex < points.length - 2; pIndex++) {
-            Point p = points[pIndex];
+        // resultado final de segmentos
+        LinkedList<LineSegment> result = new LinkedList<>();
 
-            // sort by p
-            Arrays.sort(points, pIndex + 1, points.length, p.slopeOrder());
+        for (Point pontoP : points) {
 
-            int count = 0;
-            Point j = null;
-            Point k = null;
-            Point min = p;
-            Point max = p;
-            for (int jIndex = pIndex + 1, kIndex = pIndex + 2; jIndex < points.length - 1; jIndex++, kIndex++) {
+            // cria clone de pontos e ordena de acordo com slope de p
+            Point[] slopeOrderedPoints = points.clone();
+            Arrays.sort(slopeOrderedPoints, pontoP.slopeOrder());
 
-                j = points[jIndex];
-                k = points[kIndex];
+            // segmento contendo ponto p original
+            LinkedList<Point> segment = new LinkedList<>();
+            segment.add(pontoP);
 
-                double slopeJ = p.slopeTo(j);
-                double slopeK = p.slopeTo(k);
+            for (int j = 1; j < points.length - 1; j++) {
+                // ponto j
+                Point slopePoint = slopeOrderedPoints[j];
+                double slope = pontoP.slopeTo(slopePoint);
 
-                if (slopeJ == slopeK) {
-                    count++;
-                    if (j.compareTo(min) < 0) {
-                        min = j;
+                // ponto k
+                Point nextSlopePoint = slopeOrderedPoints[j+1];
+                double nextSlope = pontoP.slopeTo(nextSlopePoint);
+
+                // se na mesma reta, adiciona o ponto
+                // caso especial para primeiro inner point
+                if (slope == nextSlope) {
+                    if (segment.peekLast() != slopePoint) {
+                        segment.add(slopePoint);
                     }
-                    if (j.compareTo(max) > 0) {
-                        max = j;
-                    }
-                    if (k.compareTo(min) < 0) {
-                        min = k;
-                    }
-                    if (k.compareTo(max) > 0) {
-                        max = k;
-                    }
-
-                } else {
-                    if (count + 2 >= 4) {
-                        promotedPoints[promotedPointsCount] = min;
-                        promotedPoints[promotedPointsCount+1] = max;
-                        promotedPointsCount += 2;
-                    }
-                    count = 0;
-                    min = p;
-                    max = p;
+                    segment.add(nextSlopePoint);
                 }
 
+                // momento da inversao ou final do array
+                if (slope != nextSlope || j == points.length - 2) {
+                    // se segmento possui >= 4 pontos
+                    // deve salvar o segmento
+                    if (segment.size() > 3) {
+
+                        // so salva o segmento se o primeiro elemento
+                        // for menor que o segundo
+                        // isso devido a ordem natural
+                        // isso evita a adicao de subsegmentos para outro valor de p.
+                        Point first = segment.removeFirst();
+                        Point second = segment.removeFirst();
+                        Point last = segment.removeLast();
+                        if (first.compareTo(second) < 0) {
+                            result.add(new LineSegment(first, last));
+                        }
+
+                    }
+
+                    // limpa o segmento e adiciona p novamente
+                    segment.clear();
+                    segment.add(pontoP);
+                }
             }
-
-            if (count + 2 >= 4) {
-                promotedPoints[promotedPointsCount] = min;
-                promotedPoints[promotedPointsCount+1] = max;
-                promotedPointsCount += 2;
-            }
-
-
         }
 
-
-
-//        for (int pIndex = 0; pIndex < points.length - 1; pIndex++) {
-//            Point p = points[pIndex];
-//
-//            // order by slope of p
-//            Arrays.sort(points, pIndex + 1, points.length, p.slopeOrder());
-//
-//            double currentSlope = Double.NaN;
-//            Point min = p;
-//            Point max = p;
-//            int count = 0;
-//
-////            int index?
-//
-//            for (int j = pIndex + 1; j < points.length; j++) {
-////                System.out.println("Comparing " + p + " against " + points[j]);
-//                double jSlope = p.slopeTo(points[j]);
-//
-//                if (points[j] == p) {
-//                    continue;
-//                }
-//
-//                if (jSlope != currentSlope) {
-//                    if (count >= 4 && max != min) {
-//                        promotedPoints[promotedPointsCount] = min;
-//                        promotedPoints[promotedPointsCount+1] = max;
-//                        promotedPointsCount += 2;
-//                    }
-//
-//                    min = p;
-//                    max = p;
-//                    currentSlope = jSlope;
-//                    count = 2;
-//
-//                    if (min.compareTo(points[j]) > 0) {
-//                        min = points[j];
-//                    }
-//
-//                    if (max.compareTo(points[j]) < 0) {
-//                        max = points[j];
-//                    }
-//
-////                    points[j-1] = p;
-//
-//                } else {
-//                    count++;
-//                    if (min.compareTo(points[j]) > 0) {
-//                        min = points[j];
-//                    }
-//
-//                    if (max.compareTo(points[j]) < 0) {
-//                        max = points[j];
-//                    }
-//
-//
-//                    points[j-1] = p;
-//                }
-//            }
-//
-//            if (count >= 4 && max != min) {
-//                promotedPoints[promotedPointsCount] = min;
-//                promotedPoints[promotedPointsCount+1] = max;
-//                promotedPointsCount += 2;
-//            }
-//
-//        }
-
-        lineSegmentsCount = promotedPointsCount / 2;
-        if (lineSegmentsCount > 0) {
-            segments = new LineSegment[lineSegmentsCount];
-        } else {
-            segments = new LineSegment[0];
-        }
-        for (int i = 0; i < lineSegmentsCount; i++) {
-            segments[i] = new LineSegment(promotedPoints[i * 2],
-                    promotedPoints[i * 2 + 1]);
-        }
-
+        // converte de linked list para array
+        segments = new LineSegment[result.size()];
+        lineSegmentsCount = segments.length;
+        segments = result.toArray(segments);
     }
 
     public int numberOfSegments() {
