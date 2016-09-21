@@ -13,7 +13,9 @@ public class BruteCollinearPoints {
     private int lineSegmentsCount = 0;
     private LineSegment[] segments;
 
-    public BruteCollinearPoints(Point[] points) {
+    public BruteCollinearPoints(Point[] pointsOriginal) {
+        Point[] points = Arrays.copyOf(pointsOriginal, pointsOriginal.length);
+
         // check if points is null
         if (points == null) {
             throw new NullPointerException("points is null");
@@ -87,7 +89,7 @@ public class BruteCollinearPoints {
     }
 
     public LineSegment[] segments() {
-        return segments;
+        return Arrays.copyOf(segments, lineSegmentsCount);
     }
 
     public static void main(String[] args) {
