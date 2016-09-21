@@ -49,36 +49,47 @@ public class FastCollinearPoints {
             int count = 0;
             Point j = null;
             Point k = null;
+            Point min = p;
+            Point max = p;
             for (int jIndex = pIndex + 1, kIndex = pIndex + 2; jIndex < points.length - 1; jIndex++, kIndex++) {
 
                 j = points[jIndex];
                 k = points[kIndex];
 
-//                if (j == p) {
-//                    continue;
-//                }
-//
                 double slopeJ = p.slopeTo(j);
                 double slopeK = p.slopeTo(k);
 
                 if (slopeJ == slopeK) {
                     count++;
-//                    points[jIndex] = points[pIndex+1];
+                    if (j.compareTo(min) < 0) {
+                        min = j;
+                    }
+                    if (j.compareTo(max) > 0) {
+                        max = j;
+                    }
+                    if (k.compareTo(min) < 0) {
+                        min = k;
+                    }
+                    if (k.compareTo(max) > 0) {
+                        max = k;
+                    }
+
                 } else {
                     if (count + 2 >= 4) {
-                        promotedPoints[promotedPointsCount] = p;
-                        promotedPoints[promotedPointsCount+1] = j;
+                        promotedPoints[promotedPointsCount] = min;
+                        promotedPoints[promotedPointsCount+1] = max;
                         promotedPointsCount += 2;
                     }
                     count = 0;
-
+                    min = p;
+                    max = p;
                 }
 
             }
 
             if (count + 2 >= 4) {
-                promotedPoints[promotedPointsCount] = p;
-                promotedPoints[promotedPointsCount+1] = k;
+                promotedPoints[promotedPointsCount] = min;
+                promotedPoints[promotedPointsCount+1] = max;
                 promotedPointsCount += 2;
             }
 
