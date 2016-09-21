@@ -116,7 +116,7 @@ public class Point implements Comparable<Point> {
 
                 if (s1 < s2) {
                     return -1;
-                } else if (s2 > s1) {
+                } else if (s1 > s2) {
                     return +1;
                 } else {
                     return 0;
@@ -143,17 +143,11 @@ public class Point implements Comparable<Point> {
      * Unit tests the Point data type.
      */
     public static void main(String[] args) {
-        // problema 1
-        Point p1 = new Point(10000, 0);
-        Point p2 = new Point(6000, 7000);
+        Point p = new Point(329, 221);
+        Point r = new Point(88, 368);
+        Point q = new Point(495, 50);
 
-        Point p3 = new Point(7000, 3000);
-
-        System.out.println(p1.slopeTo(p2));
-        System.out.println(p2.slopeTo(p1));
-
-        System.out.println(p1.slopeTo(p3));
-        System.out.println(p3.slopeTo(p1));
-
+        System.out.println(p.slopeOrder().compare(q, r));
+        System.out.println(p.slopeOrder().compare(r, q));
     }
 }
