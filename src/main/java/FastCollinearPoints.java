@@ -7,9 +7,6 @@ import java.util.LinkedList;
 
 public class FastCollinearPoints {
 
-    private int promotedPointsCount = 0;
-    private Point[] promotedPoints;
-
     private int lineSegmentsCount = 0;
     private LineSegment[] segments;
 

@@ -161,13 +161,5 @@ public class Point implements Comparable<Point> {
         System.out.println("Array ordenado por p0:: " + Arrays.toString(points));
         Arrays.sort(points, 2, points.length, points[1].slopeOrder());
         System.out.println("Array ordenado por p1:: " + Arrays.toString(points));
-
-//
-//        Arrays.sort(points, points[0].slopeOrder());
-//        System.out.println(Arrays.toString(points));
-//
-//        System.out.println(points[0].slopeTo(points[1]));
-//
-//        System.out.println(points[0].slopeTo(points[2]));
     }
 }
