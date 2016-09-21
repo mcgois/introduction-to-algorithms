@@ -34,7 +34,7 @@ public class FastCollinearPoints {
             }
         }
 
-        this.promotedPoints = new Point[2*points.length+1];
+        this.promotedPoints = new Point[points.length];
 
         for (int pIndex = 0; pIndex < points.length - 1; pIndex++) {
             Point p = points[pIndex];
