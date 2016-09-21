@@ -147,7 +147,8 @@ public class Point implements Comparable<Point> {
      */
     public int hashCode() {
         /* DO NOT MODIFY */
-        throw new UnsupportedOperationException("calling hashCode() is not permitted on this assignment");
+        throw new UnsupportedOperationException(
+                "calling hashCode() is not permitted on this assignment");
     }
 
     /**
@@ -157,7 +158,8 @@ public class Point implements Comparable<Point> {
      */
     public boolean equals(Object that) {
         /* DO NOT MODIFY */
-        throw new UnsupportedOperationException("calling equals() is not permitted on this assignment");
+        throw new UnsupportedOperationException(
+                "calling equals() is not permitted on this assignment");
     }
 
 

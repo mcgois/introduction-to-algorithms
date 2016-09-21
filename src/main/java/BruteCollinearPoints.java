@@ -40,13 +40,14 @@ public class BruteCollinearPoints {
         for (int p = 0; p < points.length; p++) {
             for (int q = p + 1; q < points.length; q++) {
                 for (int r = q + 1; r < points.length; r++) {
-                    for(int s = r + 1; s < points.length; s ++) {
+                    for (int s = r + 1; s < points.length; s++) {
                         double slope1 = points[p].slopeTo(points[q]);
                         double slope2 = points[p].slopeTo(points[r]);
                         double slope3 = points[p].slopeTo(points[s]);
 
                         if (slope1 == slope2 && slope2 == slope3) {
-                            createAndStoreSegment(points[p], points[q], points[r], points[s]);
+                            createAndStoreSegment(points[p], points[q],
+                                    points[r], points[s]);
                         }
                     }
                 }
@@ -60,7 +61,8 @@ public class BruteCollinearPoints {
             segments = new LineSegment[0];
         }
         for (int i = 0; i < lineSegmentsCount; i++) {
-            segments[i] = new LineSegment(promotedPoints[i * 2], promotedPoints[i * 2 + 1]);
+            segments[i] = new LineSegment(promotedPoints[i * 2],
+                    promotedPoints[i * 2 + 1]);
         }
 
     }

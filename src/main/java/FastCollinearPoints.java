@@ -3,7 +3,6 @@ import edu.princeton.cs.algs4.StdDraw;
 import edu.princeton.cs.algs4.StdOut;
 
 import java.util.Arrays;
-import java.util.Queue;
 
 public class FastCollinearPoints {
 
@@ -37,22 +36,21 @@ public class FastCollinearPoints {
 
         this.promotedPoints = new Point[2*points.length+1];
 
-
         for (int pIndex = 0; pIndex < points.length - 1; pIndex++) {
             Point p = points[pIndex];
 
             // order by slope of p
             Arrays.sort(points, pIndex + 1, points.length, p.slopeOrder());
 
-            Double currentSlope = null;
+            double currentSlope = Double.NaN;
             Point min = p;
             Point max = p;
             int count = 0;
             for (int j = pIndex + 1; j < points.length; j++) {
 //                System.out.println("Comparing " + p + " against " + points[j]);
-                Double jSlope = p.slopeTo(points[j]);
+                double jSlope = p.slopeTo(points[j]);
 
-                if (!jSlope.equals(currentSlope)) {
+                if (jSlope != currentSlope) {
                     if (count >= 4 && max != min) {
                         promotedPoints[promotedPointsCount] = min;
                         promotedPoints[promotedPointsCount+1] = max;
@@ -98,39 +96,18 @@ public class FastCollinearPoints {
             segments = new LineSegment[0];
         }
         for (int i = 0; i < lineSegmentsCount; i++) {
-            segments[i] = new LineSegment(promotedPoints[i * 2], promotedPoints[i * 2 + 1]);
+            segments[i] = new LineSegment(promotedPoints[i * 2],
+                    promotedPoints[i * 2 + 1]);
         }
 
     }
 
-//    private void salvaSegmento(Point min, Point max) {
-//        promotedPoints[promotedPointsCount] = min;
-//        promotedPoints[promotedPointsCount+1] = max;
-//        promotedPointsCount += 2;
-//    }
-
-    private void createAndStoreSegment(Point p, Point q, Point r, Point s) {
-//        Point[] points = new Point[4];
-//        points[0] = p;
-//        points[1] = q;
-//        points[2] = r;
-//        points[3] = s;
-//
-//        Arrays.sort(points);
-//
-//        this.promotedPoints[promotedPointsCount] = points[0];
-//        this.promotedPoints[promotedPointsCount+1] = points[3];
-//        this.promotedPointsCount += 2;
-    }
-
     public int numberOfSegments() {
         return lineSegmentsCount;
-//        return 0;
     }
 
     public LineSegment[] segments() {
         return segments;
-//        return new LineSegment[0];
     }
 
     public static void main(String[] args) {
