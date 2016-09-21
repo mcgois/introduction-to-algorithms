@@ -12,7 +12,9 @@ public class FastCollinearPoints {
     private int lineSegmentsCount = 0;
     private LineSegment[] segments;
 
-    public FastCollinearPoints(Point[] points) {
+    public FastCollinearPoints(Point[] pointsOriginal) {
+        Point[] points = Arrays.copyOf(pointsOriginal, pointsOriginal.length);
+
         // check if points is null
         if (points == null) {
             throw new NullPointerException("points is null");
@@ -107,7 +109,7 @@ public class FastCollinearPoints {
     }
 
     public LineSegment[] segments() {
-        return segments;
+        return Arrays.copyOf(segments, lineSegmentsCount);
     }
 
     public static void main(String[] args) {
