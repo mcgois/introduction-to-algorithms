@@ -119,7 +119,7 @@ public final class Board {
             result.enqueue(new Board(blks2));
         }
 
-        if (j0 - 1 < blocks.length) {
+        if (j0 - 1 >= blocks.length) {
             swap(blks3, i0, j0, i0, j0 - 1);
             result.enqueue(new Board(blks3));
         }
