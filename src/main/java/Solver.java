@@ -5,7 +5,7 @@ import edu.princeton.cs.algs4.StdOut;
 
 import java.util.Comparator;
 
-public final class Solver {
+public class Solver {
 
     private static Comparator<Node> manhattanPriority = new Comparator<Node>() {
         @Override

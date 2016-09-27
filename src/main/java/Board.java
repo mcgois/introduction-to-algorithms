@@ -3,7 +3,7 @@ import edu.princeton.cs.algs4.StdRandom;
 
 import java.util.Arrays;
 
-public final class Board {
+public class Board {
 
     private int[][] blocks;
 
