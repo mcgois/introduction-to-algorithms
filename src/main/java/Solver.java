@@ -1,69 +1,85 @@
-import edu.princeton.cs.algs4.In;
-import edu.princeton.cs.algs4.MinPQ;
-import edu.princeton.cs.algs4.Queue;
-import edu.princeton.cs.algs4.StdOut;
+import edu.princeton.cs.algs4.*;
 
 import java.util.Comparator;
 
 public final class Solver {
 
-    private int count = 0;
-    private Board previousSearchNode = null;
-    private Board searchNode;
-    private final MinPQ<Board> priorityQueue;
-    private final Board goalBoard;
-    private final Queue<Board> solution;
+    private final MinPQ<Board> queue;
+    private final MinPQ<Board> twinQueue;
+
+    private boolean solvable = false;
+    private boolean twinSolvable = false;
+
+    private Queue<Board> solution;
+    private Queue<Board> twinSolution;
+
+    private Board last = null;
+    private Board twinLast = null;
 
     public Solver(Board initial){
-        goalBoard = createGoalBoard(initial.dimension());
-        solution = new Queue<>();
-        searchNode = initial;
-        priorityQueue = new MinPQ<>(new Comparator<Board>(){
-            @Override
-            public int compare(Board o1, Board o2) {
-                return o1.hamming() - o2.hamming();
-            }
-        });
-        priorityQueue.insert(searchNode);
+        // creates priority queues
+        queue = new MinPQ<>(boardComparator);
+        twinQueue = new MinPQ<>(boardComparator);
 
-        while(!searchNode.equals(goalBoard)) {
-            previousSearchNode = searchNode;
-            searchNode = priorityQueue.delMin();
-            count++;
+        // insert initial board
+        queue.insert(initial);
+        twinQueue.insert(initial.twin());
+
+        // solution
+        solution = new Queue<>();
+        twinSolution = new Queue<>();
+
+        while(!solvable && !twinSolvable) {
+            Board searchNode = queue.delMin();
+            Board twinSearchNode = twinQueue.delMin();
+
             solution.enqueue(searchNode);
+
+            solvable = searchNode.isGoal();
+            twinSolvable = searchNode.isGoal();
+
             for (Board neighbor : searchNode.neighbors()) {
-                if (neighbor.equals(previousSearchNode)) {
+                if (neighbor.equals(last)) {
                     continue;
                 }
-                priorityQueue.insert(neighbor);
+                queue.insert(neighbor);
             }
-        }
 
+            for (Board twinNeighbor : twinSearchNode.neighbors()) {
+                if (twinNeighbor.equals(twinLast)) {
+                    continue;
+                }
+                twinQueue.insert(twinNeighbor);
+            }
+
+            last = searchNode;
+            twinLast = twinSearchNode;
+        }
     }
 
-    private Board createGoalBoard(int dimension) {
-        int[][] blks = new int[dimension][dimension];
-        int count = 1;
-        for (int i = 0; i < dimension; i++) {
-            for (int j = 0; j < dimension; j++) {
-                blks[i][j] = count++;
-            }
-        }
-        blks[dimension-1][dimension-1] = 0;
-        return new Board(blks);
-    }
 
     public boolean isSolvable() {
-        return true;
+        return solvable;
     }
 
     public int moves() {
-        return count;
+        if (isSolvable()) {
+            return solution.size() - 1;
+        } else {
+            return -1;
+        }
     }
 
     public Iterable<Board> solution() {
         return solution;
     }
+
+    private static Comparator<Board> boardComparator = new Comparator<Board>() {
+        @Override
+        public int compare(Board o1, Board o2) {
+            return o1.manhattan() - o2.manhattan();
+        }
+    };
 
     public static void main(String[] args) {
         // create initial board from file
