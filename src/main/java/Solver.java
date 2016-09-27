@@ -4,59 +4,58 @@ import java.util.Comparator;
 
 public final class Solver {
 
-    private final MinPQ<Board> queue;
-    private final MinPQ<Board> twinQueue;
+    private final MinPQ<Node> queue;
+    private final MinPQ<Node> twinQueue;
 
     private boolean solvable = false;
     private boolean twinSolvable = false;
-
+    private Node lastNode;
     private Queue<Board> solution;
-    private Queue<Board> twinSolution;
-
-    private Board last = null;
-    private Board twinLast = null;
 
     public Solver(Board initial){
         // creates priority queues
-        queue = new MinPQ<>(boardComparator);
-        twinQueue = new MinPQ<>(boardComparator);
+        queue = new MinPQ<>(manhattanPriorityComparator);
+        twinQueue = new MinPQ<>(manhattanPriorityComparator);
 
         // insert initial board
-        queue.insert(initial);
-        twinQueue.insert(initial.twin());
+        queue.insert(new Node(initial, 0, null));
+        twinQueue.insert(new Node(initial.twin(), 0, null));
 
         // solution
         solution = new Queue<>();
-        twinSolution = new Queue<>();
 
         while(!solvable && !twinSolvable) {
-            Board searchNode = queue.delMin();
-            Board twinSearchNode = twinQueue.delMin();
+            // extract searchNode
+            Node searchNode = queue.delMin();
+            Node twinSearchNode = twinQueue.delMin();
 
-            solution.enqueue(searchNode);
+            // enqueue solution
+            solution.enqueue(searchNode.board);
 
-            solvable = searchNode.isGoal();
-            twinSolvable = searchNode.isGoal();
+            // checks if solvable
+            solvable = searchNode.board.isGoal();
+            twinSolvable = twinSearchNode.board.isGoal();
 
-            for (Board neighbor : searchNode.neighbors()) {
-                if (neighbor.equals(last)) {
+            // neighboors processing
+            for (Board neighbor : searchNode.board.neighbors()) {
+                if (searchNode.previousNode != null && neighbor.equals(searchNode.previousNode.board)) {
                     continue;
                 }
-                queue.insert(neighbor);
+                queue.insert(new Node(neighbor, searchNode.moves + 1, searchNode));
             }
 
-            for (Board twinNeighbor : twinSearchNode.neighbors()) {
-                if (twinNeighbor.equals(twinLast)) {
+            // twin neighboors processing
+            for (Board twinNeighbor : twinSearchNode.board.neighbors()) {
+                if (twinSearchNode.previousNode != null && twinNeighbor.equals(twinSearchNode.previousNode.board)) {
                     continue;
                 }
-                twinQueue.insert(twinNeighbor);
+                twinQueue.insert(new Node(twinNeighbor, twinSearchNode.moves + 1, twinSearchNode));
             }
 
-            last = searchNode;
-            twinLast = twinSearchNode;
+            // saves last node
+            lastNode = searchNode;
         }
     }
-
 
     public boolean isSolvable() {
         return solvable;
@@ -64,22 +63,50 @@ public final class Solver {
 
     public int moves() {
         if (isSolvable()) {
-            return solution.size() - 1;
+            return lastNode.moves;
         } else {
             return -1;
         }
     }
 
     public Iterable<Board> solution() {
-        return solution;
+        if (isSolvable()) {
+            Stack<Board> result = new Stack<>();
+            Node n = lastNode;
+            while(n != null) {
+                result.push(n.board);
+                n = n.previousNode;
+            }
+            return result;
+        }
+        return null;
     }
 
-    private static Comparator<Board> boardComparator = new Comparator<Board>() {
+    private static Comparator<Node> manhattanPriorityComparator = new Comparator<Node>() {
         @Override
-        public int compare(Board o1, Board o2) {
-            return o1.manhattan() - o2.manhattan();
+        public int compare(Node o1, Node o2) {
+            return (o1.board.manhattan() + o1.moves) - (o2.board.manhattan() + o2.moves);
         }
     };
+
+    private static Comparator<Node> hammingPriorityComparator = new Comparator<Node>() {
+        @Override
+        public int compare(Node o1, Node o2) {
+            return (o1.board.hamming() + o1.moves) - (o2.board.hamming() + o2.moves);
+        }
+    };
+
+    private final class Node {
+        private final Board board;
+        private final Node previousNode;
+        private final int moves;
+
+        Node(Board board, int moves, Node previousNode) {
+            this.board = board;
+            this.moves = moves;
+            this.previousNode = previousNode;
+        }
+    }
 
     public static void main(String[] args) {
         // create initial board from file
