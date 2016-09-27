@@ -24,7 +24,8 @@ public final class Board {
         int count = 0;
         for (int i = 0; i < blocks.length; i++) {
             for (int j = 0; j < blocks.length; j++) {
-                if (blocks[i][j] != 0 && blocks[i][j] != (i * blocks.length + j + 1) ) {
+                if (blocks[i][j] != 0 &&
+                    blocks[i][j] != (i * blocks.length + j + 1)) {
                     count++;
                 }
             }
@@ -39,7 +40,8 @@ public final class Board {
                 if (blocks[i][j] != 0) {
                     int supposedRow = (blocks[i][j] - 1) / blocks.length;
                     int supposedColumn = (blocks[i][j] -1) % blocks.length;
-                    int dist = Math.abs(i - supposedRow) + Math.abs(j - supposedColumn);
+                    int dist = Math.abs(i - supposedRow) +
+                               Math.abs(j - supposedColumn);
                     count += dist;
                 }
             }
@@ -68,7 +70,9 @@ public final class Board {
             j1 = StdRandom.uniform(0, blocksCopy.length);
             i2 = StdRandom.uniform(0, blocksCopy.length);
             j2 = StdRandom.uniform(0, blocksCopy.length);
-        } while(blocksCopy[i1][j1] == 0 || blocksCopy[i2][j2] == 0 || (i1 == i2 && j1 == j2));
+        } while(blocksCopy[i1][j1] == 0 ||
+                blocksCopy[i2][j2] == 0 ||
+                (i1 == i2 && j1 == j2));
 
         // do swap
         swap(blocksCopy, i1, j1, i2, j2);
@@ -139,7 +143,7 @@ public final class Board {
     }
 
     public String toString() {
-        int capacity = 3 * this.blocks.length * this.blocks.length + this.blocks.length + 3;
+        int capacity = 3 * this.blocks.length ^ 2 + this.blocks.length + 3;
         StringBuilder builder = new StringBuilder(capacity);
         builder.append(dimension());
         builder.append("\n");
@@ -153,15 +157,8 @@ public final class Board {
     }
 
     public static void main(String[] args) {
-//        Board board = new Board(new int[][]{{0, 1, 3}, {4, 2, 5}, {7, 8, 6}});
-//        Board board = new Board(new int[][]{{8, 1, 3}, {4, 0, 2}, {7, 6, 5}});
-//        Board board = new Board(new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 0}});
         Board board = new Board(new int[][]{{8, 1, 3}, {4, 2, 0}, {7, 6, 5}});
         System.out.println(board);
-//        System.out.println(board.hamming());
-//        System.out.println(board.manhattan());
-//        System.out.println(board.isGoal());
-//        System.out.println(board.twin());
         System.out.println(board.neighbors());
     }
 
