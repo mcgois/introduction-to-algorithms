@@ -22,10 +22,10 @@ public class Board {
 
     public int hamming() {
         int count = 0;
-        for (int i = 0; i < blocks.length; i++) {
-            for (int j = 0; j < blocks.length; j++) {
+        for (int i = 0; i < dimension(); i++) {
+            for (int j = 0; j < dimension(); j++) {
                 if (blocks[i][j] != 0 &&
-                    blocks[i][j] != (i * blocks.length + j + 1)) {
+                    blocks[i][j] != (i * dimension() + j + 1)) {
                     count++;
                 }
             }
@@ -35,11 +35,11 @@ public class Board {
 
     public int manhattan() {
         int count = 0;
-        for (int i = 0; i < blocks.length; i++) {
-            for (int j = 0; j < blocks.length; j++) {
+        for (int i = 0; i < dimension(); i++) {
+            for (int j = 0; j < dimension(); j++) {
                 if (blocks[i][j] != 0) {
-                    int supposedRow = (blocks[i][j] - 1) / blocks.length;
-                    int supposedColumn = (blocks[i][j] -1) % blocks.length;
+                    int supposedRow = (blocks[i][j] - 1) / dimension();
+                    int supposedColumn = (blocks[i][j] -1) % dimension();
                     int dist = Math.abs(i - supposedRow) +
                                Math.abs(j - supposedColumn);
                     count += dist;
@@ -57,7 +57,7 @@ public class Board {
         int i1, j1, i2, j2;
 
         // copy block
-        int[][] blocksCopy = new int[blocks.length][blocks.length];
+        int[][] blocksCopy = new int[dimension()][dimension()];
         for (int i = 0; i < blocksCopy.length; i++) {
             for (int j = 0; j < blocksCopy.length; j++) {
                 blocksCopy[i][j] = blocks[i][j];
@@ -66,10 +66,10 @@ public class Board {
 
         // find two elements to swap
         do {
-            i1 = StdRandom.uniform(0, blocksCopy.length);
-            j1 = StdRandom.uniform(0, blocksCopy.length);
-            i2 = StdRandom.uniform(0, blocksCopy.length);
-            j2 = StdRandom.uniform(0, blocksCopy.length);
+            i1 = StdRandom.uniform(0, dimension());
+            j1 = StdRandom.uniform(0, dimension());
+            i2 = StdRandom.uniform(0, dimension());
+            j2 = StdRandom.uniform(0, dimension());
         } while(blocksCopy[i1][j1] == 0 ||
                 blocksCopy[i2][j2] == 0 ||
                 (i1 == i2 && j1 == j2));
@@ -92,13 +92,13 @@ public class Board {
     public Iterable<Board> neighbors() {
         int i0 = 0;
         int j0 = 0;
-        int[][] blks1 = new int[blocks.length][blocks.length];
-        int[][] blks2 = new int[blocks.length][blocks.length];
-        int[][] blks3 = new int[blocks.length][blocks.length];
-        int[][] blks4 = new int[blocks.length][blocks.length];
+        int[][] blks1 = new int[dimension()][dimension()];
+        int[][] blks2 = new int[dimension()][dimension()];
+        int[][] blks3 = new int[dimension()][dimension()];
+        int[][] blks4 = new int[dimension()][dimension()];
 
-        for (int i = 0; i < blocks.length; i++) {
-            for (int j = 0; j < blocks.length; j++) {
+        for (int i = 0; i < dimension(); i++) {
+            for (int j = 0; j < dimension(); j++) {
                 if (blocks[i][j] == 0) {
                     i0 = i;
                     j0 = j;
@@ -118,7 +118,7 @@ public class Board {
             result.enqueue(new Board(blks1));
         }
 
-        if (i0 + 1 < blocks.length) {
+        if (i0 + 1 < dimension()) {
             swap(blks2, i0, j0, i0 + 1, j0);
             result.enqueue(new Board(blks2));
         }
@@ -128,7 +128,7 @@ public class Board {
             result.enqueue(new Board(blks3));
         }
 
-        if (j0 + 1 < blocks.length) {
+        if (j0 + 1 < dimension()) {
             swap(blks4, i0, j0, i0, j0 + 1);
             result.enqueue(new Board(blks4));
         }
@@ -143,7 +143,8 @@ public class Board {
     }
 
     public String toString() {
-        int capacity = 3 * this.blocks.length ^ 2 + this.blocks.length + 3;
+        int n = dimension();
+        int capacity = 3 * n * n  + n + 3;
         StringBuilder builder = new StringBuilder(capacity);
         builder.append(dimension());
         builder.append("\n");
