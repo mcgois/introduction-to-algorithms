@@ -39,8 +39,10 @@ public class KdTree {
 
     public void insert(Point2D p) {
         checkArguments(p);
-        this.root = put(this.root, p, new RectHV(0,0,1,1), true);
-        this.size++;
+        if (!contains(p)) {
+            this.root = put(this.root, p, new RectHV(0, 0, 1, 1), true);
+            this.size++;
+        }
     }
 
     private Node put(Node h, Point2D p, RectHV rect, boolean xOrientation) {
@@ -55,7 +57,6 @@ public class KdTree {
 
         if (cmp < 0) h.lb = put(h.lb, p, splitRect, !xOrientation);
         else if (cmp > 0) h.rt = put(h.rt, p, splitRect, !xOrientation);
-        else if (cmp == 0) h.p = p;
 
         return h;
     }
@@ -129,28 +130,86 @@ public class KdTree {
         }
     }
 
+//    public Iterable<Point2D> range(RectHV rect) {
+//        checkArguments(rect);
+//        return range(this.root, rect);
+//    }
+//
+//    private Iterable<Point2D> range(Node node, RectHV rect2) {
+//        List<Point2D> result = new ArrayList<>();
+//
+//        if (node != null) {
+//            result.add(node.p);
+//            for (Point2D pLeft : range(node.lb, rect2)) {
+//                result.add(pLeft);
+//            }
+//            for (Point2D pRight : range(node.rt, rect2)) {
+//                result.add(pRight);
+//            }
+//        }
+//
+//
+////        if (node == null) {
+////            return new ArrayList<>();
+////        }
+////
+////        List<Point2D> result = new ArrayList<>();
+//////        if (rect.contains(node.p)) {
+////            result.add(node.p);
+//////        }
+////
+//
+//        return result;
+//    }
+
     public Iterable<Point2D> range(RectHV rect) {
         checkArguments(rect);
-
         List<Point2D> result = new ArrayList<>();
-        range(this.root, true, rect, result);
+        range(rect, this.root, result);
         return result;
     }
 
-    private void range(Node h, boolean b, RectHV rect, List<Point2D> result) {
-        if (h != null && h.rect.intersects(rect)){
-            if (rect.contains(h.p)) {
-                result.add(h.p);
-            }
+    private List<Point2D> range(RectHV rect, Node h, List<Point2D> result) {
+        if (h == null) return result;
 
-            range(h.lb, b, rect, result);
-            range(h.rt, b, rect, result);
+        if (rect.contains(h.p)) {
+            result.add(h.p);
         }
+
+        if (h.lb != null && rect.intersects(h.lb.rect)) {
+            range(rect, h.lb, result);
+        }
+
+        if (h.rt != null && rect.intersects(h.rt.rect)) {
+            range(rect, h.rt, result);
+        }
+        return result;
     }
 
     public Point2D nearest(Point2D p) {
         checkArguments(p);
-        return null;
+        return nearest(p, this.root, this.root.p, true);
+    }
+
+    private Point2D nearest(Point2D queryPoint, Node h, Point2D champion, boolean xOrientation) {
+        if (h == null) return champion;
+
+        if (queryPoint.distanceSquaredTo(h.p) < queryPoint.distanceSquaredTo(champion)) {
+            champion = h.p;
+        }
+
+        if (h.rect.distanceSquaredTo(queryPoint) < queryPoint.distanceSquaredTo(champion)) {
+            if ((xOrientation && queryPoint.x() < h.p.x()) ||
+                    (!xOrientation && queryPoint.y() < h.p.y())) {
+                champion = nearest(queryPoint, h.lb, champion, !xOrientation);
+                champion = nearest(queryPoint, h.rt, champion, !xOrientation);
+            } else {
+                champion = nearest(queryPoint, h.rt, champion, !xOrientation);
+                champion = nearest(queryPoint, h.lb, champion, !xOrientation);
+            }
+        }
+
+        return champion;
     }
 
     public static void main(String[] args) {
