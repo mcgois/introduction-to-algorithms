@@ -53,8 +53,8 @@ public class KdTree {
         }
 
         // comparison
-        double cmp = xOrientation ? point.x() - node.point.x()
-                                  : point.y() - node.point.y();
+        int cmp = xOrientation ? Point2D.X_ORDER.compare(point, node.point)
+                               : Point2D.Y_ORDER.compare(point, node.point);
 
         // split Rect
         RectHV splitRect = splitRect(rect, node.point, xOrientation, cmp);
@@ -67,7 +67,7 @@ public class KdTree {
     }
 
     private RectHV splitRect(RectHV rect, Point2D point,
-                             boolean xOrientation, double comparison) {
+                             boolean xOrientation, int comparison) {
         if (xOrientation) {
             if (comparison < 0) {
                 return new RectHV(rect.xmin(), rect.ymin(), point.x(), rect.ymax());
@@ -106,8 +106,8 @@ public class KdTree {
         }
 
         // comparison
-        double cmp = xOrientation ? point.x() - node.point.x()
-                                  : point.y() - node.point.y();
+        double cmp = xOrientation ? Point2D.X_ORDER.compare(point, node.point)
+                                  : Point2D.Y_ORDER.compare(point, node.point);
 
         if (cmp < 0) return contains(node.lb, point, !xOrientation);
         else return contains(node.rt, point, !xOrientation);
@@ -198,8 +198,8 @@ public class KdTree {
 
     public static void main(String[] args) {
         KdTree pointSET = new KdTree();
-        pointSET.insert(new Point2D(0.5,0.5));
-        pointSET.insert(new Point2D(0.5,0.5));
+        pointSET.insert(new Point2D(0.5, 0.5));
+        pointSET.insert(new Point2D(0.5, 0.5));
         System.out.println(pointSET.size());
     }
 }
