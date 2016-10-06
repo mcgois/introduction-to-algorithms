@@ -38,16 +38,18 @@ public class KdTree {
 
     public void insert(Point2D point) {
         checkArguments(point);
-        if (!contains(point)) {
-            this.root = put(this.root, point, new RectHV(0, 0, 1, 1), true);
-            this.size++;
-        }
+        this.root = put(this.root, point, new RectHV(0, 0, 1, 1), true);
     }
 
     private Node put(Node node, Point2D point, RectHV rect, boolean xOrientation) {
         // if leaf
         if (node == null) {
+            this.size++;
             return new Node(point, rect);
+        }
+
+        if (node.point.equals(point)) {
+            return node;
         }
 
         // comparison
@@ -196,33 +198,8 @@ public class KdTree {
 
     public static void main(String[] args) {
         KdTree pointSET = new KdTree();
-//        System.out.println(pointSET.isEmpty());
-//        System.out.println(pointSET.contains(new Point2D(0.5,0.5)));
-        System.out.println(pointSET.nearest(new Point2D(0.5, 0.5)));
-//        System.out.println(pointSET.range(new RectHV(0.3,0.3, 0.7,0.7)));
-//        pointSET.insert(new Point2D(0.206107, 0.095492));
-//        System.out.println(pointSET.isEmpty());
-//
-//        pointSET.insert(new Point2D(0.206107, 0.095492));
-//        pointSET.insert(new Point2D(0.975528, 0.654508));
-//        pointSET.insert(new Point2D(0.024472, 0.345492));
-//        pointSET.insert(new Point2D(0.793893, 0.095492));
-//        pointSET.insert(new Point2D(0.793893, 0.904508));
-//        pointSET.insert(new Point2D(0.975528, 0.345492));
-//        pointSET.insert(new Point2D(0.206107, 0.904508));
-//        pointSET.insert(new Point2D(0.500000, 0.000000));
-//        pointSET.insert(new Point2D(0.024472, 0.654508));
-//        pointSET.insert(new Point2D(0.500000, 1.000000));
-//
-//        System.out.println(pointSET.contains(new Point2D(0.206107, 0.095492)));
-//        System.out.println(pointSET.contains(new Point2D(0.975528, 0.654508)));
-//        System.out.println(pointSET.contains(new Point2D(0.024472, 0.345492)));
-//        System.out.println(pointSET.contains(new Point2D(0.793893, 0.095492)));
-//        System.out.println(pointSET.contains(new Point2D(0.793893, 0.904508)));
-//        System.out.println(pointSET.contains(new Point2D(0.975528, 0.345492)));
-//        System.out.println(pointSET.contains(new Point2D(0.206107, 0.904508)));
-//        System.out.println(pointSET.contains(new Point2D(0.500000, 0.000000)));
-//        System.out.println(pointSET.contains(new Point2D(0.024472, 0.654508)));
-//        System.out.println(pointSET.contains(new Point2D(0.500000, 1.000000)));
+        pointSET.insert(new Point2D(0.5,0.5));
+        pointSET.insert(new Point2D(0.5,0.5));
+        System.out.println(pointSET.size());
     }
 }
