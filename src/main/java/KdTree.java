@@ -163,6 +163,9 @@ public class KdTree {
 
     public Point2D nearest(Point2D p) {
         checkArguments(p);
+        if (this.root == null) {
+            return null;
+        }
         return nearest(p, this.root, this.root.point, true);
     }
 
@@ -193,9 +196,12 @@ public class KdTree {
 
     public static void main(String[] args) {
         KdTree pointSET = new KdTree();
-        System.out.println(pointSET.isEmpty());
-        pointSET.insert(new Point2D(0.206107, 0.095492));
-        System.out.println(pointSET.isEmpty());
+//        System.out.println(pointSET.isEmpty());
+//        System.out.println(pointSET.contains(new Point2D(0.5,0.5)));
+        System.out.println(pointSET.nearest(new Point2D(0.5, 0.5)));
+//        System.out.println(pointSET.range(new RectHV(0.3,0.3, 0.7,0.7)));
+//        pointSET.insert(new Point2D(0.206107, 0.095492));
+//        System.out.println(pointSET.isEmpty());
 //
 //        pointSET.insert(new Point2D(0.206107, 0.095492));
 //        pointSET.insert(new Point2D(0.975528, 0.654508));
