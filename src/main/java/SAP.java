@@ -1,14 +1,19 @@
-import edu.princeton.cs.algs4.*;
+import edu.princeton.cs.algs4.BreadthFirstDirectedPaths;
+import edu.princeton.cs.algs4.Digraph;
 
 public final class SAP {
 
     private Digraph digraph;
 
     public SAP(Digraph G) {
-        this.digraph = G;
+        this.digraph = new Digraph(G);
     }
 
     public int length(int v, int w) {
+
+        checkBounds(v);
+        checkBounds(w);
+
         int minDistance = Integer.MAX_VALUE;
         BreadthFirstDirectedPaths b1 = new BreadthFirstDirectedPaths(digraph, v);
         BreadthFirstDirectedPaths b2 = new BreadthFirstDirectedPaths(digraph, w);
@@ -26,6 +31,10 @@ public final class SAP {
     }
 
     public int ancestor(int v, int w) {
+
+        checkBounds(v);
+        checkBounds(w);
+
         int ancestor = -1;
         int minDistance = Integer.MAX_VALUE;
         BreadthFirstDirectedPaths b1 = new BreadthFirstDirectedPaths(digraph, v);
@@ -45,6 +54,10 @@ public final class SAP {
     }
 
     public int length(Iterable<Integer> v, Iterable<Integer> w) {
+
+        checkBounds(v);
+        checkBounds(w);
+
         int minDistance = Integer.MAX_VALUE;
         BreadthFirstDirectedPaths b1 = new BreadthFirstDirectedPaths(digraph, v);
         BreadthFirstDirectedPaths b2 = new BreadthFirstDirectedPaths(digraph, w);
@@ -62,6 +75,10 @@ public final class SAP {
     }
 
     public int ancestor(Iterable<Integer> v, Iterable<Integer> w) {
+
+        checkBounds(v);
+        checkBounds(w);
+
         int ancestor = -1;
         int minDistance = Integer.MAX_VALUE;
         BreadthFirstDirectedPaths b1 = new BreadthFirstDirectedPaths(digraph, v);
@@ -80,17 +97,21 @@ public final class SAP {
         return ancestor;
     }
 
-    public static void main(String[] args) {
-        In in = new In(args[0]);
-        Digraph G = new Digraph(in);
-        SAP sap = new SAP(G);
-        while (!StdIn.isEmpty()) {
-            int v = StdIn.readInt();
-            int w = StdIn.readInt();
-            int length   = sap.length(v, w);
-            int ancestor = sap.ancestor(v, w);
-            StdOut.printf("length = %d, ancestor = %d\n", length, ancestor);
+    private void checkBounds(int i) {
+        if (i < 0 || i >= digraph.V()) {
+            throw new IndexOutOfBoundsException();
         }
+    }
+
+    private void checkBounds(Iterable<Integer> vertices) {
+        if (vertices == null) {
+            throw new NullPointerException();
+        }
+
+        for (int vertex : vertices) {
+            checkBounds(vertex);
+        }
+
     }
 
 }

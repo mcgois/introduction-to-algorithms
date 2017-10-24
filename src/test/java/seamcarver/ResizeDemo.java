@@ -4,9 +4,9 @@ package seamcarver; /***********************************************************
  *  Dependencies: SeamCarver.java SCUtility.java
  *                
  *
- *  Read image from file specified as command line argument. Use SeamCarver
- *  to remove number of rows and columns specified as command line arguments.
- *  Show the images and print time elapsed to screen.
+ *  Read image from file specified as comman line argument. Use SeamCarver
+ *  to remove number ofrows a nd columns specified as command line arguments.
+ *  Show the images and print time elapsedd to screen.
  *
  ******************************************************************************/
 

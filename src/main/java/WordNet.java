@@ -1,12 +1,15 @@
-import edu.princeton.cs.algs4.*;
+import edu.princeton.cs.algs4.Bag;
+import edu.princeton.cs.algs4.Digraph;
+import edu.princeton.cs.algs4.DirectedCycle;
+import edu.princeton.cs.algs4.In;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public final class WordNet {
 
-    private final Map<Integer, String> id2synset = new HashMap<>();
-    private final Map<String, Bag<Integer>> noun2ids = new HashMap<String, Bag<Integer>>();
+    private final Map<Integer, String> idsToSynsets = new HashMap<Integer, String>();
+    private final Map<String, Bag<Integer>> nounsToIds = new HashMap<String, Bag<Integer>>();
     private SAP sap;
 
     public WordNet(String synsets, String hypernyms) {
@@ -23,14 +26,14 @@ public final class WordNet {
         String line;
         while ((line = in.readLine()) != null) {
             String[] items = line.split(",");
-            Integer id = Integer.parseInt(items[0]);
+            int id = Integer.parseInt(items[0]);
             String[] noums = items[1].split(" ");
             String desc = items[2];
 
-            id2synset.put(id, items[1]);
+            idsToSynsets.put(id, items[1]);
             for (String noum : noums) {
-                noun2ids.putIfAbsent(noum, new Bag<Integer>());
-                noun2ids.get(noum).add(id);
+                nounsToIds.putIfAbsent(noum, new Bag<Integer>());
+                nounsToIds.get(noum).add(id);
             }
         }
         in.close();
@@ -42,13 +45,13 @@ public final class WordNet {
         }
 
         In in = new In(hypernymsFile);
-        Digraph digraph = new Digraph(id2synset.size());
+        Digraph digraph = new Digraph(idsToSynsets.size());
         String line;
-        while((line = in.readLine()) != null) {
+        while ((line = in.readLine()) != null) {
             String[] items = line.split(",");
-            Integer v = Integer.parseInt(items[0]);
+            int v = Integer.parseInt(items[0]);
             for (int i = 1; i < items.length; i++) {
-                Integer w = Integer.parseInt(items[i]);
+                int w = Integer.parseInt(items[i]);
                 digraph.addEdge(v, w);
             }
         }
@@ -82,18 +85,21 @@ public final class WordNet {
     }
 
     public Iterable<String> nouns() {
-        return noun2ids.keySet();
+        return nounsToIds.keySet();
     }
 
     public boolean isNoun(String word) {
-        return noun2ids.containsKey(word);
+        if (word == null) {
+            throw new IllegalArgumentException();
+        }
+        return nounsToIds.containsKey(word);
     }
 
     public int distance(String nounA, String nounB) {
         verifyNoun(nounA);
         verifyNoun(nounB);
 
-        return sap.length(noun2ids.get(nounA), noun2ids.get(nounB));
+        return sap.length(nounsToIds.get(nounA), nounsToIds.get(nounB));
     }
 
     private void verifyNoun(String noun) {
@@ -106,30 +112,8 @@ public final class WordNet {
         verifyNoun(nounA);
         verifyNoun(nounB);
 
-        Integer ancestor = sap.ancestor(noun2ids.get(nounA), noun2ids.get(nounB));
-        return id2synset.get(ancestor);
-    }
-
-    public static void main(String... args) {
-        WordNet wordNet = new WordNet(args[0], args[1]);
-
-        while(!StdIn.isEmpty()) {
-            String nounA = StdIn.readString();
-            String nounB = StdIn.readString();
-
-            if (!wordNet.isNoun(nounA)) {
-                StdOut.printf("%s is not a noun!\n");
-            }
-
-            if (!wordNet.isNoun(nounB)) {
-                StdOut.printf("%s is not a noun!\n");
-            }
-
-            int discance = wordNet.distance(nounA, nounB);
-            String ancestor = wordNet.sap(nounA, nounB);
-
-            StdOut.printf("distance = %d, ancestor = %s\n", discance, ancestor);
-        }
+        int ancestor = sap.ancestor(nounsToIds.get(nounA), nounsToIds.get(nounB));
+        return idsToSynsets.get(ancestor);
     }
 
 }
