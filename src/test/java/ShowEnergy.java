@@ -1,4 +1,4 @@
-package seamcarver; /******************************************************************************
+/******************************************************************************
  *  Compilation:  javac ShowEnergy.java
  *  Execution:    java ShowEnergy input.png
  *  Dependencies: SeamCarver.java SCUtility.java

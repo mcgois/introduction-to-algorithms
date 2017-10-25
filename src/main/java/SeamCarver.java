@@ -1,20 +1,17 @@
-package seamcarver;
-
 import edu.princeton.cs.algs4.Picture;
 
-import java.awt.*;
+import java.awt.Color;
 
 public class SeamCarver {
 
+    private static final double MAX_ENERGY = 1000;
     private Picture picture;
     private double[][] energy;
-    private static final double MAX_ENERGY = 1000;
-    private double[][] distTo;
 
     public SeamCarver(Picture picture) {
-        this.picture = picture;
+        checkNull(picture);
+        this.picture = new Picture(picture);
         this.energy = new double[picture.width()][picture.height()];
-        this.distTo = new double[picture.width()][picture.height()];
         computeEnergy();
     }
 
@@ -40,7 +37,7 @@ public class SeamCarver {
     }
 
     public Picture picture() {
-        return this.picture;
+        return new Picture(this.picture);
     }
 
     public int height() {
@@ -53,7 +50,7 @@ public class SeamCarver {
 
     public double energy(int x, int y) {
         if (x < 0 || x > width() - 1 || y < 0 || y > height() - 1) {
-            throw new IllegalArgumentException();
+            throw new IndexOutOfBoundsException();
         }
         return energy[x][y];
     }
@@ -74,7 +71,7 @@ public class SeamCarver {
             }
         }
 
-        for (int x = 1; x < picture.width() - 1; x++) {
+        for (int x = 1; x < picture.width(); x++) {
             result[x] = steps[x-1][result[x - 1]];
         }
 
@@ -105,9 +102,10 @@ public class SeamCarver {
     }
 
     public void removeHorizontalSeam(int[] seam) {
-        if (seam.length != picture.width()) {
-            throw new IllegalArgumentException();
-        }
+
+        checkNull(seam);
+        checkSeam(seam, true);
+        checkDegeneration(true);
 
         Picture copy = new Picture(picture.width(), picture.height() - 1);
         for (int x = 0; x < picture.width(); x++) {
@@ -124,10 +122,42 @@ public class SeamCarver {
         this.computeEnergy();
     }
 
-    public void removeVerticalSeam(int[] seam) {
-        if (seam.length != picture.height()) {
+    private void checkDegeneration(boolean horizontal) {
+        int size = horizontal ? picture.height() : picture.width();
+        if (size <= 1) {
             throw new IllegalArgumentException();
         }
+    }
+
+    private void checkSeam(int[] seam, boolean horizontal) {
+        int size = horizontal ? picture.width() : picture.height();
+        int otherSize = horizontal ? picture.height() : picture.width();
+
+        if (seam.length != size) {
+            throw new IllegalArgumentException();
+        }
+
+        for (int k = 0; k < seam.length; k++) {
+            if (seam[k] < 0 || seam[k] > otherSize - 1) {
+                throw new IllegalArgumentException();
+            }
+
+            if (k == 0) {
+                continue;
+            }
+
+            if (Math.abs(seam[k]-seam[k-1]) > 1) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+    }
+
+    public void removeVerticalSeam(int[] seam) {
+
+        checkNull(seam);
+        checkSeam(seam, false);
+        checkDegeneration(false);
 
         Picture copy = new Picture(picture.width() - 1, picture.height());
         for (int y = 0; y < picture.height(); y++) {
@@ -212,6 +242,12 @@ public class SeamCarver {
 
         steps[x][y] = bestMove;
         sumEnergy[x][y] = energy[x][y] + minPath;
+    }
+
+    private void checkNull(Object object) {
+        if (object == null) {
+            throw new NullPointerException();
+        }
     }
 
 }

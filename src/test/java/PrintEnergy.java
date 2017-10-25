@@ -1,4 +1,4 @@
-package seamcarver; /******************************************************************************
+/******************************************************************************
  *  Compilation:  javac PrintEnergy.java
  *  Execution:    java PrintEnergy input.png
  *  Dependencies: SeamCarver.java

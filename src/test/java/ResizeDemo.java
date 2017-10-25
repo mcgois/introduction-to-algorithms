@@ -1,4 +1,4 @@
-package seamcarver; /******************************************************************************
+/******************************************************************************
  *  Compilation:  javac ResizeDemo.java
  *  Execution:    java ResizeDemo input.png columnsToRemove rowsToRemove
  *  Dependencies: SeamCarver.java SCUtility.java

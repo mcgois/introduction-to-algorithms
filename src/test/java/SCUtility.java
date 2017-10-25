@@ -1,4 +1,4 @@
-package seamcarver; /******************************************************************************
+/******************************************************************************
  *  Compilation:  javac SCUtility.java
  *  Execution:    none
  *  Dependencies: SeamCarver.java

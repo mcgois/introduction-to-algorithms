@@ -1,4 +1,4 @@
-package seamcarver; /******************************************************************************
+/******************************************************************************
  *  Compilation:  javac ShowSeams.java
  *  Execution:    java ShowSeams input.png
  *  Dependencies: SeamCarver.java SCUtility.java
