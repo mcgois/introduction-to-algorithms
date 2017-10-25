@@ -1,6 +1,14 @@
-import edu.princeton.cs.algs4.*;
+import edu.princeton.cs.algs4.FlowEdge;
+import edu.princeton.cs.algs4.FlowNetwork;
+import edu.princeton.cs.algs4.FordFulkerson;
+import edu.princeton.cs.algs4.In;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 public final class BaseballElimination {
 
@@ -40,7 +48,7 @@ public final class BaseballElimination {
             losses[k] = in.readInt();
             remaining[k] = in.readInt();
 
-            for (int n = 0; n < numberOfTeams; n ++) {
+            for (int n = 0; n < numberOfTeams; n++) {
                 g[k][n] = in.readInt();
             }
             teams[k] = teamName;
@@ -79,13 +87,13 @@ public final class BaseballElimination {
         return remaining[teamToId.get(team)];
     }
 
-    public int agaist(String team1, String team2) {
+    public int against(String team1, String team2) {
         checkTeam(team1);
         checkTeam(team2);
         return g[teamToId.get(team1)][teamToId.get(team2)];
     }
 
-    void compute(String team) {
+    private void compute(String team) {
         checkTeam(team);
 
         int x = teamToId.get(team);
@@ -135,41 +143,26 @@ public final class BaseballElimination {
         }
 
         for (FlowEdge e : flowNetwork.adj(s)) {
-            if (e.flow() != e.capacity()) {
+            if ((int) e.flow() != (int) e.capacity()) {
                 isEliminated[x] = true;
             }
         }
     }
 
-    boolean isEliminated(String team) {
+    public boolean isEliminated(String team) {
         checkTeam(team);
         return isEliminated[teamToId.get(team)];
     }
 
     public Iterable<String> certificateOfElimination(String team) {
         checkTeam(team);
-        return r.get(teamToId.get(team));
+        Set<String> result = r.get(teamToId.get(team));
+        return result.isEmpty() ? null : result;
     }
 
     private void checkTeam(String team) {
         if (team == null || !teamToId.containsKey(team)) {
             throw new IllegalArgumentException();
-        }
-    }
-
-    public static void main(String[] args) {
-        BaseballElimination division = new BaseballElimination(args[0]);
-        for (String team : division.teams()) {
-            if (division.isEliminated(team)) {
-                StdOut.print(team + " is eliminated by the subset R = { ");
-                for (String t : division.certificateOfElimination(team)) {
-                    StdOut.print(t + " ");
-                }
-                StdOut.println("}");
-            }
-            else {
-                StdOut.println(team + " is not eliminated");
-            }
         }
     }
 
