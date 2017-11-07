@@ -1,4 +1,5 @@
-import java.util.TreeSet;
+import java.util.HashSet;
+import java.util.Set;
 
 public final class BoggleSolver {
 
@@ -12,7 +13,7 @@ public final class BoggleSolver {
     }
 
     public Iterable<String> getAllValidWords(BoggleBoard board) {
-        TreeSet<String> words = new TreeSet<>();
+        Set<String> words = new HashSet<>();
         for (int i = 0; i < board.rows(); i++) {
             for (int j = 0; j < board.cols(); j++) {
                 searchWords(board, i, j, words);
@@ -21,47 +22,37 @@ public final class BoggleSolver {
         return words;
     }
 
-    private void searchWords(BoggleBoard board, int i, int j, TreeSet<String> words) {
+    private void searchWords(BoggleBoard board, int i, int j, Set<String> words) {
         boolean[][] visited = new boolean[board.rows()][board.cols()];
         dfs(board, i, j, words, visited, "");
     }
 
-    private void dfs(BoggleBoard board, int i, int j, TreeSet<String> words, boolean[][] visited, String prefix) {
-        if (i < 0 || i >= board.rows()) {
-            return;
-        }
-
-        if (j < 0 || j >= board.cols()) {
-            return;
-        }
-
-        if (visited[i][j]) {
-            return;
-        }
-
-        char letter = board.getLetter(i, j);
-        prefix = prefix + (letter == 'Q' ? "QU" : letter);
-
-        if (prefix.length() > 2 && dictionary.contains(prefix)) {
-            words.add(prefix);
-        }
-
-        if (!dictionary.isPrefix(prefix)) {
+    private void dfs(BoggleBoard board, int i, int j, Set<String> words, boolean[][] visited, String prefix) {
+        if (!dictionary.isPrefix2(prefix)) {
             return;
         }
 
         visited[i][j] = true;
 
-        dfs(board, i - 1, j - 1, words, visited, prefix);
-        dfs(board, i - 1, j, words, visited, prefix);
-        dfs(board, i - 1, j + 1, words, visited, prefix);
-        dfs(board, i, j - 1, words, visited, prefix);
-        dfs(board, i, j + 1, words, visited, prefix);
-        dfs(board, i + 1, j - 1, words, visited, prefix);
-        dfs(board, i + 1, j, words, visited, prefix);
-        dfs(board, i + 1, j + 1, words, visited, prefix);
+        char letter = board.getLetter(i, j);
+        prefix = prefix + (letter == 'Q' ? "QU" : letter);
+        if (prefix.length() > 2 && dictionary.contains(prefix)) {
+            words.add(prefix);
+        }
+
+        for (int row = i - 1; row <= i + 1; row++) {
+            for (int col = j - 1; col <= j + 1; col++) {
+                if (isValidIndex(board, row, col) && !visited[row][col]) {
+                    dfs(board, row, col, words, visited, prefix);
+                }
+            }
+        }
 
         visited[i][j] = false;
+    }
+
+    private boolean isValidIndex(BoggleBoard board, int row, int col) {
+        return row >= 0 && row < board.rows() && col >= 0 && col < board.cols();
     }
 
     public int scoreOf(String word) {

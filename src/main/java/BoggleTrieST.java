@@ -8,13 +8,17 @@ public class BoggleTrieST<Value> {
     private Node root;
     private int n;
 
-    private static class Node {
+    public static class Node {
         private Object value;
         private Node[] next = new Node[R];
     }
 
     public BoggleTrieST() {
 
+    }
+
+    public Node getRoot() {
+        return root;
     }
 
     public Value get(String key) {
@@ -24,7 +28,7 @@ public class BoggleTrieST<Value> {
         return (Value) x.value;
     }
 
-    private Node get(Node x, String key, int d) {
+    public Node get(Node x, String key, int d) {
         if (x == null) return null;
         if (d == key.length()) return x;
         char c = key.charAt(d);
@@ -152,6 +156,17 @@ public class BoggleTrieST<Value> {
 
     public boolean isPrefix(String prefix) {
         return get(root, prefix, 0) != null;
+    }
+
+    public boolean isPrefix2(String prefix) {
+        Node node = root;
+
+        for (int i = 0; i < prefix.length() && node != null; i++) {
+            char c = prefix.charAt(i);
+            node = node.next[c - OFFSET];
+        }
+
+        return node != null;
     }
 
 }
