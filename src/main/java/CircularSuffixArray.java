@@ -5,8 +5,8 @@ import java.util.Comparator;
 
 public class CircularSuffixArray {
 
-    private String original;
-    private Integer[] index;
+    private final String original;
+    private final Integer[] index;
 
     public CircularSuffixArray(String s) {
         checkNull(s);
@@ -16,7 +16,7 @@ public class CircularSuffixArray {
             this.index[i] = i;
         }
 
-        Arrays.sort(index, new Comparator<Integer>(){
+        Arrays.sort(index, new Comparator<Integer>() {
             @Override
             public int compare(Integer first, Integer second) {
                 int firstIndex = first;
@@ -25,9 +25,7 @@ public class CircularSuffixArray {
                 for (int i = 0; i < original.length(); i++) {
                     if (original.charAt(firstIndex) < original.charAt(secondIndex)) {
                         return -1;
-                    }
-
-                    if (original.charAt(firstIndex) > original.charAt(secondIndex)) {
+                    } else if (original.charAt(firstIndex) > original.charAt(secondIndex)) {
                         return 1;
                     }
 
@@ -45,7 +43,14 @@ public class CircularSuffixArray {
     }
 
     public int index(int i) {
+        checkLimits(i);
         return index[i];
+    }
+
+    private void checkLimits(int i) {
+        if (i < 0 || i >= original.length()) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public static void main(String[] args) {
@@ -57,7 +62,7 @@ public class CircularSuffixArray {
 
     private void checkNull(String s) {
         if (s == null) {
-            throw new NullPointerException();
+            throw new IllegalArgumentException();
         }
     }
 

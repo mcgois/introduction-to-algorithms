@@ -35,7 +35,7 @@ public class BurrowsWheeler {
         int[] next = computeNext(input);
 
         int count = input.length();
-        while(count > 0) {
+        while (count > 0) {
             BinaryStdOut.write(input.charAt(next[first]), 8);
             first = next[first];
             count--;
